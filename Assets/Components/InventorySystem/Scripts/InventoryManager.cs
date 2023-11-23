@@ -6,28 +6,35 @@ using TMPro;
 
 public class InventoryManager : MonoBehaviour
 {
+    [Header("Inventory Settings")]
+    [Tooltip("Items can be moved with left mouse button to another slot")]
+    public bool canMoveItems;
+    [Tooltip("Right-clicking a stack will split the stack. Only works if Can Move Items is enabled.")]
+    public bool canSplitStacks;
+
+
     // these variables are Serialized Fields
     // this means they can be private since they are not accessed by other scripts
     // but still be visible in the inspector
-
+    [Header("Inventory Setup")]
     [SerializeField] private GameObject slotHolder;
-    [SerializeField] private ItemClass itemToAdd;
-    [SerializeField] private ItemClass itemToRemove;
+    /*[SerializeField] private ItemClass itemToAdd;
+    [SerializeField] private ItemClass itemToRemove;*/
 
     // array for starting items (for player or for testing)
+    [Tooltip("You can add items here to spawn in the inventory for testing")]
     [SerializeField] private SlotClass[] startingItems;
+    [SerializeField] private GameObject itemCursor; // for Moving Items
 
     private SlotClass[] items;
-
     private GameObject[] slots;
 
     #region Moving Items Variables
-    [SerializeField] private GameObject itemCursor;
+
     private SlotClass movingSlot;
     private SlotClass tempSlot;
     private SlotClass originSlot;
     bool isMovingItem;
-
     #endregion Moving Items Variables
 
     private void Start()
@@ -55,9 +62,6 @@ public class InventoryManager : MonoBehaviour
 
         RefreshUI();
 
-        //testing add and remove functions
-        Add(itemToAdd, 1);
-        Remove(itemToRemove);
     }
     private void Update()
     {
@@ -67,16 +71,31 @@ public class InventoryManager : MonoBehaviour
         {
             itemCursor.GetComponent<Image>().sprite = movingSlot.GetItem().itemIcon;
         }
-        if (Input.GetMouseButtonDown(0)) // LMB click!
+        if (canMoveItems)
         {
-            if (isMovingItem)
+            if (Input.GetMouseButtonDown(0)) // LMB click!
             {
-                EndItemMove();
-            }
+                if (isMovingItem)
+                {
+                    EndItemMove();
+                }
 
-            else
+                else
+                {
+                    BeginItemMove();
+                }
+            }
+            else if (Input.GetMouseButtonDown(1) && canSplitStacks) // RMB click!
             {
-                BeginItemMove();
+                if (isMovingItem)
+                {
+                    EndItemMove_Single();
+                }
+
+                else
+                {
+                    BeginItemMove_Half();
+                }
             }
         }
 
@@ -184,6 +203,26 @@ public class InventoryManager : MonoBehaviour
     #endregion Inventory Utility
 
     #region Moving Items
+    private bool BeginItemMove_Half() // Stack Splitting
+    {
+        originSlot = GetClosestSlot();
+        if (originSlot == null || originSlot.GetItem() == null)
+        {
+            return false; // there is no item to split
+        }
+        // Currently picks up half the stack rounded up.
+        // if rounding down is preferred,
+        // change instances of CeilToInt to FloorToInt in the next two lines
+        movingSlot = new SlotClass(originSlot.GetItem(), Mathf.CeilToInt(originSlot.GetQuantity() / 2f));
+        originSlot.SubQuantity(Mathf.CeilToInt(originSlot.GetQuantity() / 2f));
+        if (originSlot.GetQuantity() == 0)
+            originSlot.Clear();
+
+        isMovingItem = true;
+        RefreshUI();
+        return true;
+    }
+
     private bool BeginItemMove()
     {
         originSlot = GetClosestSlot();
@@ -191,12 +230,13 @@ public class InventoryManager : MonoBehaviour
         {
             return false; // there is no item to move
         }
-        movingSlot = new SlotClass(originSlot.GetItem(), originSlot.GetQuantity());
+        movingSlot = new SlotClass(originSlot);
         originSlot.Clear();
         isMovingItem = true;
         RefreshUI();
         return true;
     }
+
     private bool EndItemMove()
     {
         originSlot = GetClosestSlot();
@@ -221,7 +261,7 @@ public class InventoryManager : MonoBehaviour
                 }
                 else
                 {
-                    tempSlot = new SlotClass(originSlot.GetItem(), originSlot.GetQuantity()); // a = b
+                    tempSlot = new SlotClass(originSlot); // a = b
                     originSlot.AddItem(movingSlot.GetItem(), movingSlot.GetQuantity()); // b = c
                     movingSlot.AddItem(tempSlot.GetItem(), tempSlot.GetQuantity()); // a = c
                     RefreshUI();
@@ -237,8 +277,30 @@ public class InventoryManager : MonoBehaviour
         isMovingItem = false;
         RefreshUI();
         return true;
+    }
+    private bool EndItemMove_Single()
+    {
+        originSlot = GetClosestSlot();
+        if (originSlot == null)
+            return false;
 
+        movingSlot.SubQuantity(1);
+        if(originSlot.GetItem() != null && originSlot.GetItem() == movingSlot.GetItem())
+            originSlot.AddQuantity(1);
+        else 
+            originSlot.AddItem(movingSlot.GetItem(), 1);
 
+        if (movingSlot.GetQuantity() < 1)
+        {
+            isMovingItem = false;
+            movingSlot.Clear();
+        }
+        else
+        {
+            isMovingItem = true;
+        }
+        RefreshUI();
+        return true;
     }
     private SlotClass GetClosestSlot()
     {

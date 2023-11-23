@@ -19,6 +19,12 @@ public class SlotClass
         quantity = _quantity;
     }
 
+    public SlotClass (SlotClass slot)
+    {
+        this.item = slot.GetItem();
+        this.quantity = slot.GetQuantity();
+    }
+
     public void Clear()
     {
         this.item = null;
