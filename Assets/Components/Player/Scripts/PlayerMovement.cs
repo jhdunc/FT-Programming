@@ -4,15 +4,17 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    [Header("Player Settings")]
     // set default speed variable
     public float moveSpeed = 3f;
-    
+    // bool to enable sprint
+    public bool sprint;
+
+    [Header("Game Settings")]
     // bool to yes/no allow player movement
     public bool playerCanMove;
-
-    // bool to enable sprint
+        
     // bool to check if player is already sprinting
-    public bool sprint;
     private bool isSprinting;
 
     // set variable for components in Player object
@@ -53,12 +55,12 @@ public class PlayerMovement : MonoBehaviour
             if (isSprinting == false)
             {
                 isSprinting = true;
-                moveSpeed += 2f;
+                moveSpeed *= 1.5f;
             }
             else
             {
                 isSprinting = false;
-                moveSpeed -= 2f;
+                moveSpeed /= 1.5f;
             }
         }
         #endregion

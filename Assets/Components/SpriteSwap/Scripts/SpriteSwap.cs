@@ -4,24 +4,82 @@ using UnityEngine;
 
 public class SpriteSwap : MonoBehaviour
 {
+    public bool spriteUp;
     public SpriteRenderer sr;
-    public Sprite firstSprite;
-    public Sprite newSprite;
+    public List<Sprite> spriteList = new List<Sprite>();
+    private int sprIndex;
+
+    bool nearPlayer;
 
     private void Start()
     {
-        sr.sprite = firstSprite;
+        spriteUp = false;
+        nearPlayer = false;
+
+        sprIndex = 0;
+        sr.sprite = spriteList[sprIndex];
+        sr = GetComponent<SpriteRenderer>();
+
+
+        GameEvents.current.onSpriteSwapUp += SpriteSwapUp;
     }
-    public void ChangeSpriteNew()
+    #region Change Sprite by List
+    public void IncrSpriteUp()
     {
-        if (sr.sprite == firstSprite)
-        { sr.sprite = newSprite; }
+        
+        if (sprIndex < (spriteList.Count -1))
+        {
+            sprIndex++;
+            sr.sprite = spriteList[sprIndex];
+        }
+        else
+            Debug.Log("Cannot run IncrSpriteUp: end of the list.");
+    }
+    public void IncrSpriteDown()
+    {
+        if (sprIndex != 0)
+        {
+            sprIndex--;
+            sr.sprite = spriteList[sprIndex];
+        }
+        else
+            Debug.Log("Cannot run IncrSpriteDown: beginning of the list.");
+    }
+    #endregion
+
+    public void UpdateSprite(int spriteIndex)
+    {
+        sr.sprite = spriteList[spriteIndex];
+    }
+    #region Method Call to Enable Swap
+    public void SpriteSwapUp(GameObject targetObject)
+    {
+            targetObject.GetComponent<SpriteSwap>().spriteUp = true;
     }
 
-    public void ChangeSpriteOld()
+    #endregion
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (sr.sprite == newSprite)
-        { sr.sprite = firstSprite; }
+        if (collision.tag == "Player")
+            nearPlayer = true;
+    }
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.tag == "Player")
+            nearPlayer = false;
     }
 
+    private void Update()
+    {
+        if (spriteUp)
+        {
+            if (Input.GetKeyDown(KeyCode.E) && nearPlayer)
+            {
+                IncrSpriteUp();
+            }
+        }
+
+    }
 }
+
+

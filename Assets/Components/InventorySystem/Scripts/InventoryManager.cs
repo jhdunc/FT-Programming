@@ -8,9 +8,9 @@ public class InventoryManager : MonoBehaviour
 {
     [Header("Inventory Settings")]
     [Tooltip("Items can be moved with left mouse button to another slot")]
-    public bool canMoveItems;
+    public bool canMoveItems = true;
     [Tooltip("Right-clicking a stack will split the stack. Only works if Can Move Items is enabled.")]
-    public bool canSplitStacks;
+    public bool canSplitStacks = true;
 
 
     // these variables are Serialized Fields
@@ -283,6 +283,8 @@ public class InventoryManager : MonoBehaviour
         originSlot = GetClosestSlot();
         if (originSlot == null)
             return false;
+        if (originSlot.GetItem() != null && originSlot.GetItem() != movingSlot.GetItem())
+            return false;
 
         movingSlot.SubQuantity(1);
         if(originSlot.GetItem() != null && originSlot.GetItem() == movingSlot.GetItem())
@@ -314,5 +316,7 @@ public class InventoryManager : MonoBehaviour
         return null;
     }
     #endregion Moving Items
+
+
 }
 
