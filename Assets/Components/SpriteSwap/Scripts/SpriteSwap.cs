@@ -17,8 +17,8 @@ public class SpriteSwap : MonoBehaviour
         nearPlayer = false;
 
         sprIndex = 0;
+        sr = gameObject.GetComponent<SpriteRenderer>();
         sr.sprite = spriteList[sprIndex];
-        sr = GetComponent<SpriteRenderer>();
 
 
         GameEvents.current.onSpriteSwapUp += SpriteSwapUp;
