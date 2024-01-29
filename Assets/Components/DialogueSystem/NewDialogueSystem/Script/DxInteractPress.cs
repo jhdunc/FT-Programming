@@ -47,20 +47,16 @@ public class DxInteractPress : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.E) && nearPlayer)
         {
-
             CheckActiveDx();
             switch (npcState)
             {
                 case DialogueSystem.DialogueCondition.FirstContact:
                     InitiateDialogue(activeDx);
-                    Debug.Log("Initiated: First Contact");
                     break;
                 case DialogueSystem.DialogueCondition.QuestAvailable:
-                    Debug.Log("Initiated: QuestAvailable"); 
                     InitiateDialogue(activeDx);
                     break;
                 case DialogueSystem.DialogueCondition.QuestActive:
-                    Debug.Log("Initiated: Quest Active - " + activeDx);
                     InitiateDialogue(activeDx);
                     break;
                 case DialogueSystem.DialogueCondition.QuestEnd:
@@ -72,14 +68,13 @@ public class DxInteractPress : MonoBehaviour
                         for (int x = 0; x < worldObject.Length; x++) // loop through all world objects in list
                         {
                             GameEvents.current.SpriteSwapUp(worldObject[x]); // enable player interaction with world object sprite swap
-                        } 
+                        }
                     }
                     break;
                 case DialogueSystem.DialogueCondition.Idle:
                     InitiateDialogue(activeDx);
                     break;
-            }    
-             
+            }
         }
     }
     #region Collision Logic
@@ -95,6 +90,7 @@ public class DxInteractPress : MonoBehaviour
         if (collision.tag == "Player")
         {
             UI.SetActive(false);
+            activeDxIndex = 0;
             nearPlayer = false;
         }
     }
@@ -102,6 +98,7 @@ public class DxInteractPress : MonoBehaviour
     void InitiateDialogue(DxObject dialogue)
     {
         UI.SetActive(true);
+        Debug.Log("dxObj: " + dialogue + "is at index: " + activeDxIndex);
 
         if (dialogue != null && activeDxIndex < (dialogue.dialogueText.Count - 1))
         {
@@ -112,15 +109,15 @@ public class DxInteractPress : MonoBehaviour
         {
             dialogueTextUI.text = dialogue.dialogueText[activeDxIndex]; // set the UI text to read the dialogue text
             activeDxIndex += 1;
-            npcState = dialogue.endCondition;
         }
         else if (activeDxIndex == dialogue.dialogueText.Count)
-        {       
+        {
+            npcState = dialogue.endCondition;
             UI.SetActive(false);
             activeDxIndex = 0;
         }
     }
-    
+
 
     void CheckActiveDx()
     {   // makes certain that the current dialogue variable matches the current 
