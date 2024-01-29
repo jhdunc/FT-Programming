@@ -15,4 +15,5 @@ MonoBehaviour:
   dialogueCondition: 0
   dialogueText:
   - Hi, nice to meet you.
+  - 'I''m a test NPC. '
   endCondition: 1

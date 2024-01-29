@@ -27,13 +27,17 @@ public class SpriteSwap : MonoBehaviour
     public void IncrSpriteUp()
     {
         
-        if (sprIndex < (spriteList.Count -1))
+        if (sprIndex < (spriteList.Count - 1))
         {
+            Debug.Log("the object: " + gameObject + "Index: " + sprIndex);
             sprIndex++;
             sr.sprite = spriteList[sprIndex];
         }
         else
+        {
             Debug.Log("Cannot run IncrSpriteUp: end of the list.");
+            Debug.Log("the object: " + gameObject + "Index: " + sprIndex);
+        }
     }
     public void IncrSpriteDown()
     {

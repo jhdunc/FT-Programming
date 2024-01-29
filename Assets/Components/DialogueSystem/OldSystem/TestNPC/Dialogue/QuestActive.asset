@@ -15,4 +15,5 @@ MonoBehaviour:
   dialogueCondition: 2
   dialogueText:
   - I'm waiting for that gem!
+  - I really need to get my hands on it.
   endCondition: 3

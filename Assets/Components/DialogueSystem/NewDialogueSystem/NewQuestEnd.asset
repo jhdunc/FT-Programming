@@ -10,10 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 204825c9b53f97d4a96b10246af0eddc, type: 3}
-  m_Name: Idle
+  m_Name: NewQuestEnd
   m_EditorClassIdentifier: 
-  dialogueCondition: 4
+  dialogueCondition: 3
   dialogueText:
-  - 'Thanks again. '
-  - ... well. Bye now, I guess.
+  - This is QE line 1
+  - This is QE line 2
+  - This is QE line 3
   endCondition: 4
