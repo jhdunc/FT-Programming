@@ -13,17 +13,17 @@ public class DialogueInteract : MonoBehaviour
     [SerializeField] TextMeshProUGUI dialogueTextUI;
 
     [Header("Dialogue Objects")]
-    [SerializeField] DialogueObject firstContact;
-    [SerializeField] DialogueObject questAvailable;
-    [SerializeField] DialogueObject questActive;
-    [SerializeField] DialogueObject questEnd;
-    [SerializeField] DialogueObject idle;
+    [SerializeField] DxObject firstContact;
+    [SerializeField] DxObject questAvailable;
+    [SerializeField] DxObject questActive;
+    [SerializeField] DxObject questEnd;
+    [SerializeField] DxObject idle;
 
     [Header("Item Management: Quests")]
 
     [SerializeField] InventoryManager inventory;
     [SerializeField] ItemClass objectiveItem;
-    [SerializeField] GameObject worldObject;
+    [SerializeField] GameObject[] worldObject;
 
     private bool nearPlayer;
 
@@ -112,7 +112,14 @@ public class DialogueInteract : MonoBehaviour
 
                             UI.SetActive(true);
                             dialogueTextUI.text = questEnd.dialogueText[i];
-                            GameEvents.current.SpriteSwapUp(worldObject); // Make sprite swap possible
+                            if (worldObject != null)
+                            {
+                                for (int x = 0; x < worldObject.Length; x++)
+                                {
+                                    GameEvents.current.SpriteSwapUp(worldObject[x]);
+                                } // Make sprite swap possible if this is an objective
+                            }
+                                    
                             npcState = questEnd.endCondition; // advance to next dialogue set
                         }
                         else
@@ -134,6 +141,7 @@ public class DialogueInteract : MonoBehaviour
                         UI.SetActive(true);
                         dialogueTextUI.text = questEnd.dialogueText[i];
                     yield return new WaitForSeconds(dialogueDelay);
+                    
                     }
                     npcState = questEnd.endCondition;
                 break;
@@ -145,6 +153,11 @@ public class DialogueInteract : MonoBehaviour
                     UI.SetActive(true);
                     dialogueTextUI.text = idle.dialogueText[i];
                     yield return new WaitForSeconds(dialogueDelay);
+
+                    if (GetComponent<SpriteSwap>() != null)
+                    {
+                        GetComponent<SpriteSwap>().UpdateSprite(1);
+                    }
                 }
                 npcState = idle.endCondition;
                 break;

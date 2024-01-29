@@ -56,7 +56,7 @@ public class SpriteSwap : MonoBehaviour
     {
             targetObject.GetComponent<SpriteSwap>().spriteUp = true;
     }
-
+    
     #endregion
     private void OnTriggerEnter2D(Collider2D collision)
     {

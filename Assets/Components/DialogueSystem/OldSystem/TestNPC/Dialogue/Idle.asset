@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 204825c9b53f97d4a96b10246af0eddc, type: 3}
-  m_Name: FirstContact
+  m_Name: Idle
   m_EditorClassIdentifier: 
-  dialogueCondition: 0
+  dialogueCondition: 4
   dialogueText:
-  - First Contact!
-  endCondition: 1
+  - Thanks again. Go away please!
+  endCondition: 4

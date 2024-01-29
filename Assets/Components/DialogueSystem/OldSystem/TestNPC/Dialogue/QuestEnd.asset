@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 204825c9b53f97d4a96b10246af0eddc, type: 3}
-  m_Name: QuestActive
+  m_Name: QuestEnd
   m_EditorClassIdentifier: 
-  dialogueCondition: 2
+  dialogueCondition: 3
   dialogueText:
-  - 'Dialogue State: Quest Active'
-  endCondition: 3
+  - Wow, thanks! Go touch the purple thing now.
+  endCondition: 4

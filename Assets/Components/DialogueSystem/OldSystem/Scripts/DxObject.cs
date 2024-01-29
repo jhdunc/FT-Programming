@@ -15,12 +15,13 @@ namespace DialogueSystem
 }
 [CreateAssetMenu(fileName = "DialogueObject", menuName = "Dialogue System / NPC Dialogue Object", order = 0)]
 
-public class DialogueObject : ScriptableObject
+public class DxObject : ScriptableObject
 {
     public DialogueSystem.DialogueCondition dialogueCondition;
     public List<string> dialogueText = new List<string>();
     
     [Header("Condition at Resolution")]
     public DialogueSystem.DialogueCondition endCondition;
-
 }
+
+

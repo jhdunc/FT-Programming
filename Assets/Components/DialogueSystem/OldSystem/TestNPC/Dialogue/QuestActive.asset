@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 204825c9b53f97d4a96b10246af0eddc, type: 3}
-  m_Name: QuestAvailable
+  m_Name: QuestActive
   m_EditorClassIdentifier: 
-  dialogueCondition: 1
+  dialogueCondition: 2
   dialogueText:
-  - 'Dialogue State: Quest Available'
-  endCondition: 2
+  - I'm waiting for that gem!
+  endCondition: 3
