@@ -6,12 +6,13 @@ using UnityEngine.SceneManagement;
 public class GroundItem : MonoBehaviour
 {
     public ItemClass itemClass;
-    public InventoryManager inventory;
+    private InventoryManager inventory;
     public bool nearPlayer;
 
     private void Start()
     {
         GameEvents.current.onItemPickup += ItemPickup;
+        inventory = GameObject.Find("Inventory").GetComponent<InventoryManager>();
     }
 
     public void OnTriggerEnter2D(Collider2D other)

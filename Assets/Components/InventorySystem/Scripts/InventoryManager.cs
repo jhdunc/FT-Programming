@@ -18,8 +18,6 @@ public class InventoryManager : MonoBehaviour
     // but still be visible in the inspector
     [Header("Inventory Setup")]
     [SerializeField] private GameObject slotHolder;
-    /*[SerializeField] private ItemClass itemToAdd;
-    [SerializeField] private ItemClass itemToRemove;*/
 
     // array for starting items (for player or for testing)
     [Tooltip("You can add items here to spawn in the inventory for testing")]

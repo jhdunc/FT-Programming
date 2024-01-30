@@ -5,7 +5,7 @@ using UnityEngine;
 public class SpriteSwap : MonoBehaviour
 {
     public bool spriteUp;
-    public SpriteRenderer sr;
+    private SpriteRenderer sr;
     public List<Sprite> spriteList = new List<Sprite>();
     private int sprIndex;
 
@@ -13,7 +13,6 @@ public class SpriteSwap : MonoBehaviour
 
     private void Start()
     {
-        spriteUp = false;
         nearPlayer = false;
 
         sprIndex = 0;
@@ -32,11 +31,11 @@ public class SpriteSwap : MonoBehaviour
             Debug.Log("the object: " + gameObject + "Index: " + sprIndex);
             sprIndex++;
             sr.sprite = spriteList[sprIndex];
+            spriteUp = false;
         }
         else
         {
             Debug.Log("Cannot run IncrSpriteUp: end of the list.");
-            Debug.Log("the object: " + gameObject + "Index: " + sprIndex);
         }
     }
     public void IncrSpriteDown()

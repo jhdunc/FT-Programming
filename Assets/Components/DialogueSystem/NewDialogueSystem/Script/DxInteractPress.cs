@@ -18,10 +18,9 @@ public class DxInteractPress : MonoBehaviour
     [SerializeField] DxObject idle;
 
     [Header("Item Management: Quests")]
-
-    [SerializeField] InventoryManager inventory;
-    [SerializeField] ItemClass objectiveItem;
-    [SerializeField] GameObject[] worldObject;
+    [SerializeField] ItemClass objectiveItem; // item required to complete quest
+    [SerializeField] GameObject[] worldObject; // object in world affected when quest completed
+    private InventoryManager inventory;
 
     private bool nearPlayer;
     private DxObject activeDx;
@@ -29,6 +28,8 @@ public class DxInteractPress : MonoBehaviour
 
     private void Start()
     {
+        inventory = GameObject.Find("Inventory").GetComponent<InventoryManager>(); //find the inventory
+
         nearPlayer = false;
         // default NPC state to First Contact
         npcState = DialogueSystem.DialogueCondition.FirstContact;
@@ -62,6 +63,10 @@ public class DxInteractPress : MonoBehaviour
                 case DialogueSystem.DialogueCondition.QuestEnd:
                     InitiateDialogue(activeDx);
                     inventory.Remove(objectiveItem); // remove quest objective
+                    if (GetComponent<SpriteSwap>() != null)
+                    {
+                        GetComponent<SpriteSwap>().UpdateSprite(1); // update NPC sprite if sprite changes
+                    }
 
                     if (worldObject != null) // check if a world object is affected
                     {
