@@ -38,11 +38,11 @@ public class LiveSpriteSwap : MonoBehaviour
         {
             tarobj.sprIndex++;
             tarobj.sr.sprite = tarobj.spriteList[sprIndex];
-            if (tarobj.animList != null)
-            {
-                tarobj.animIndex++;
-                tarobj.anim.runtimeAnimatorController = tarobj.animList[animIndex];
-            }
+        }
+        if (tarobj.animIndex < (tarobj.animList.Count - 1))
+        {
+            tarobj.animIndex++;
+            tarobj.anim.runtimeAnimatorController = tarobj.animList[animIndex];
         }
         else
         {
@@ -63,7 +63,7 @@ public class LiveSpriteSwap : MonoBehaviour
 
     public void UpdateSprite(GameObject targetObject, int spriteIndex)
     {
-        
+
         var tarobj = targetObject.GetComponent<LiveSpriteSwap>();
         if (tarobj.animList.Count > 0)
         { tarobj.anim.runtimeAnimatorController = tarobj.animList[spriteIndex]; }
@@ -74,7 +74,7 @@ public class LiveSpriteSwap : MonoBehaviour
     #region Method Call to Enable Swap
     public void SpriteSwapUp(GameObject targetObject)
     {
-        targetObject.GetComponent<LiveSpriteSwap>().spriteUp = true;
+        targetObject.GetComponent<SpriteSwap>().spriteUp = true;
     }
 
     #endregion

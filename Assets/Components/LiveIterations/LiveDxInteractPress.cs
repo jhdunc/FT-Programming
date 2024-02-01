@@ -70,8 +70,7 @@ public class LiveDxInteractPress : MonoBehaviour
                             {
                                 if (x < worldObject.Length)
                                 {
-                                    GameEvents.current.IncrSpriteUp(worldObject[x]);
-                                    Debug.Log("Updooted the: " + worldObject[x]);
+                                    GameEvents.current.UpdateSprite(worldObject[x], 1);
                                 }
                             }
                         }
