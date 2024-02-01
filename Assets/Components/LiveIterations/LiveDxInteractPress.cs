@@ -2,43 +2,36 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-public class DxInteractPress : MonoBehaviour
+
+public class LiveDxInteractPress : MonoBehaviour
 {
     private DialogueSystem.DialogueCondition npcState;
 
     [Header("UI Game Objects")]
-    [Tooltip("Set this as the GameObject for the dialogue UI. If you disable this object, no dialogue UI should be visible.")]
     [SerializeField] GameObject UI;
-    [Tooltip("This object is a placeholder for the dialogue text - this object is where it will appear.")]
     [SerializeField] TextMeshProUGUI dialogueTextUI;
 
     [Header("Dialogue Objects")]
-    [Tooltip("The dialogue that the player hears the first time they interact with this NPC")]
     [SerializeField] DxObject firstContact;
-    [Tooltip("If the NPC has a quest, this dialogue shows when the player interacts with them.")]
     [SerializeField] DxObject questAvailable;
-    [Tooltip("Dialogue for when the NPC has a quest, and the player has heard the quest dialogue but not yet completed the quest objective.")]
     [SerializeField] DxObject questActive;
-    [Tooltip("Dialogue for when the player completes the object and turns in the quest at the NPC.")]
     [SerializeField] DxObject questEnd;
-    [Tooltip("Idle NPC chatter, usually set after all other interactions complete.")]
     [SerializeField] DxObject idle;
 
     [Header("Item Management: Quests")]
-    [Tooltip("The scriptable object for the item that the player needs to collect.")]
-    [SerializeField] ItemClass objectiveItem; // item required to complete quest
-    [Tooltip("The GameObject in the world that will have SpriteSwap enabled on quest completion. This should be pulled from the active game objects in the hierarchy.")]
-    [SerializeField] GameObject[] worldObject; // object in world affected when quest completed
-    private InventoryManager inventory;
+
+    [SerializeField] InventoryManager inventory;
+    [SerializeField] ItemClass objectiveItem;
+    [SerializeField] GameObject[] worldObject;
 
     private bool nearPlayer;
     private DxObject activeDx;
     private int activeDxIndex;
 
+    [SerializeField] GameObject goPoofPrefab;
+    private GameObject goPoof;
     private void Start()
     {
-        inventory = GameObject.Find("Inventory").GetComponent<InventoryManager>(); //find the inventory
-
         nearPlayer = false;
         // default NPC state to First Contact
         npcState = DialogueSystem.DialogueCondition.FirstContact;
@@ -67,20 +60,35 @@ public class DxInteractPress : MonoBehaviour
                 case DialogueSystem.DialogueCondition.QuestEnd:
                     InitiateDialogue(activeDx);
                     inventory.Remove(objectiveItem); // remove quest objective
-                    if (GetComponent<SpriteSwap>() != null)
-                    {
-                        GetComponent<SpriteSwap>().UpdateSprite(1); // update NPC sprite if sprite changes
-                    }
 
-                    if (worldObject != null) // check if a world object is affected
+
+                    if (questEnd.dialogueText.Count - 1 == activeDxIndex)
                     {
-                        for (int x = 0; x < worldObject.Length; x++) // loop through all world objects in list
+                        if (worldObject != null) // check if a world object is affected
                         {
-                            GameEvents.current.SpriteSwapUp(worldObject[x]); // enable player interaction with world object sprite swap
+                            for (int x = 0; x <= worldObject.Length; x++) // loop through all world objects in list
+                            {
+                                if (x < worldObject.Length)
+                                {
+                                    GameEvents.current.IncrSpriteUp(worldObject[x]);
+                                    Debug.Log("Updooted the: " + worldObject[x]);
+                                }
+                            }
+                        }
+                        if (goPoofPrefab != null && !goPoof)
+                        {
+                            goPoof = Instantiate(goPoofPrefab, this.transform.position, Quaternion.identity);
+                            StartCoroutine(DestroyParticle());
+                        }
+                        if (GetComponent<LiveSpriteSwap>() != null)
+                        {
+                            Debug.Log("spriteswap attached to: " + gameObject);
+                            GameEvents.current.UpdateSprite(gameObject, 1);
                         }
                     }
                     break;
                 case DialogueSystem.DialogueCondition.Idle:
+
                     InitiateDialogue(activeDx);
                     break;
             }
@@ -107,7 +115,6 @@ public class DxInteractPress : MonoBehaviour
     void InitiateDialogue(DxObject dialogue)
     {
         UI.SetActive(true);
-        Debug.Log("dxObj: " + dialogue + "is at index: " + activeDxIndex);
 
         if (dialogue != null && activeDxIndex < (dialogue.dialogueText.Count - 1))
         {
@@ -161,5 +168,11 @@ public class DxInteractPress : MonoBehaviour
                 activeDx = idle;
                 break;
         }
+    }
+
+    public IEnumerator DestroyParticle()
+    {
+        yield return new WaitForSeconds(1.5f);
+        Destroy(goPoof);
     }
 }

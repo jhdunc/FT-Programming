@@ -13,6 +13,8 @@ public class GameEvents : MonoBehaviour
     }
     public event Action onItemPickup;
     public event Action<GameObject> onSpriteSwapUp;
+    public event Action<GameObject> onIncrSpriteUp;
+    public event Action<GameObject, int> onUpdateSprite;
 
     public void ItemPickup()
     {
@@ -26,6 +28,21 @@ public class GameEvents : MonoBehaviour
         if (onSpriteSwapUp != null)
         {
             onSpriteSwapUp(targetObject);
+        }
+    }
+
+    public void IncrSpriteUp(GameObject targetObject)
+    {
+        if (onIncrSpriteUp != null)
+        {
+            onIncrSpriteUp(targetObject);
+        }
+    }
+    public void UpdateSprite(GameObject targetObject, int index)
+    {
+        if (onUpdateSprite != null)
+        {
+            onUpdateSprite(targetObject, index);
         }
     }
 

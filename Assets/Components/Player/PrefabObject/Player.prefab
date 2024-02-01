@@ -46,11 +46,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: abf9bc61606785949979889df14f2ea8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 3
+  moveSpeed: 2
   sprint: 1
-  playerCanMove: 1
-  rb: {fileID: 4566873438196427761}
-  anim: {fileID: 4566873438196427762}
+  sprintStamina: 0
 --- !u!114 &4574086376415677139
 MonoBehaviour:
   m_ObjectHideFlags: 0

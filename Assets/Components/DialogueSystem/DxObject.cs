@@ -17,7 +17,7 @@ namespace DialogueSystem
 
 public class DxObject : ScriptableObject
 {
-    public DialogueSystem.DialogueCondition dialogueCondition;
+    /*public DialogueSystem.DialogueCondition dialogueCondition;*/
     public List<string> dialogueText = new List<string>();
     
     [Header("Condition at Resolution")]

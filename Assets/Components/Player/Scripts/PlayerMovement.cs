@@ -1,34 +1,127 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerMovement : MonoBehaviour
 {
     [Header("Player Settings")]
     // set default speed variable
-    public float moveSpeed = 3f;
+    [Tooltip("Set base speed for the player here.")]
+    public float moveSpeed;
     // bool to enable sprint
+    [Tooltip("Enable or Disable Sprint in game.")]
     public bool sprint;
+    [Tooltip("Set the maximum value for stamina.")]
+    public float sprintStamina;
 
     [Header("Game Settings")]
     // bool to yes/no allow player movement
-    public bool playerCanMove;
+    private bool playerCanMove;
         
     // bool to check if player is already sprinting
     private bool isSprinting;
 
     // set variable for components in Player object
-    public Rigidbody2D rb;
-    public Animator anim;
+    private Rigidbody2D rb;
+    private Animator anim;
 
     // store the movement input
     Vector2 movement;
+
+    private GameObject timerUI;
+    private GameObject slider;
+
+    private float timeRemaining;
 
     private void Start()
     {
         playerCanMove = true;
         isSprinting = false;
+
+        rb = GetComponentInChildren<Rigidbody2D>();
+        anim = GetComponentInChildren<Animator>();
+
     }
+    private void Awake()
+    {
+        // if no max stamina has been set by client, set to default.
+        if (sprintStamina == 0)
+        { sprintStamina = 4; }
+
+        if(moveSpeed ==0)
+        { moveSpeed = 2; }
+        // Setup stamina variables in code to make client-side easier
+        timerUI = transform.Find("PlayerObject/StaminaUI").gameObject;
+        slider = transform.Find("PlayerObject/StaminaUI/Slider").gameObject;
+
+
+        timeRemaining = sprintStamina; // current no time has elapsed at start
+        timerUI.SetActive(false); // sprint UI does not appear until sprinting
+        slider.GetComponent<Slider>().maxValue = sprintStamina; // set max value of slider to sprint stamina max
+        slider.GetComponent<Slider>().value = sprintStamina; // set value at start to max stamina
+    }
+    #region Sprint Methods
+    void DecayStamina()
+    {
+        if (timeRemaining <= sprintStamina && isSprinting)
+        {
+            if (movement != Vector2.zero)
+            {
+                timeRemaining -= Time.deltaTime;
+                slider.GetComponent<Slider>().value = timeRemaining;
+            }
+        }
+    }
+    void RechargeStamina()
+    {
+        if((!isSprinting && timeRemaining < sprintStamina) || movement == Vector2.zero)
+            {
+                timeRemaining += Time.deltaTime;
+                slider.GetComponent<Slider>().value = timeRemaining;
+                if (timeRemaining > sprintStamina)
+                { timeRemaining = sprintStamina; }
+         
+        }
+    }
+    void Sprint()
+    {
+        // If Sprint bool is true, player toggles SPRINTING with Left Shift. 
+        // Change the control by changing the KeyCode in the first if statement.
+        if (Input.GetKeyDown(KeyCode.LeftShift) && sprint == true)
+        {
+            if (isSprinting == false && timeRemaining > 0)
+            {
+                isSprinting = true;
+                moveSpeed *= 1.5f;
+            }
+            else
+            {
+                EndSprint();
+            }
+        }
+        if (timeRemaining <= 0)
+        {
+            EndSprint();
+        }
+    }
+    void EndSprint()
+    {
+        isSprinting = false;
+        moveSpeed /= 1.5f;
+    }
+    void SprintUI()
+    {
+        if (sprintStamina >= timeRemaining)
+        {
+            if (isSprinting || timeRemaining < sprintStamina)
+            { timerUI.SetActive(true); }
+            else
+            { timerUI.SetActive(false); }
+        }
+    }
+
+    #endregion
     void Update()
     {
         #region Input
@@ -47,24 +140,15 @@ public class PlayerMovement : MonoBehaviour
 
         // set animator's speed Parameter to match player speed
         anim.SetFloat("Speed", movement.sqrMagnitude);
-        
-        // If Sprint bool is true, player toggles SPRINTING with Left Shift. 
-        // Change the control by changing the KeyCode in the first if statement.
-        if (Input.GetKeyDown(KeyCode.LeftShift) && sprint == true)
-        {
-            if (isSprinting == false)
-            {
-                isSprinting = true;
-                moveSpeed *= 1.5f;
-            }
-            else
-            {
-                isSprinting = false;
-                moveSpeed /= 1.5f;
-            }
-        }
+
+        Sprint();
+
+        DecayStamina();
+        RechargeStamina();
+        SprintUI();
         #endregion
     }
+
     void UpdateAnimation()
     {
         if (movement != Vector2.zero)
@@ -75,9 +159,7 @@ public class PlayerMovement : MonoBehaviour
         { 
             anim.Play("Player_Idle");
         }
-
     }
-
 
     private void FixedUpdate()
     {
