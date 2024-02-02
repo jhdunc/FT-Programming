@@ -85,8 +85,6 @@ public class DialogueInteract : MonoBehaviour
                     yield return new WaitForSeconds(dialogueDelay); // wait for the delay before showing the next string 
                 }
                 npcState = firstContact.endCondition;
-                
-                
                 break;
 
             case DialogueSystem.DialogueCondition.QuestAvailable:

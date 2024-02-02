@@ -169,7 +169,7 @@ public class LiveDxInteractPress : MonoBehaviour
         }
     }
 
-    public IEnumerator DestroyParticle()
+     IEnumerator DestroyParticle()
     {
         yield return new WaitForSeconds(1.5f);
         Destroy(goPoof);
